@@ -122,6 +122,17 @@ func generateSandboxMemoryMetrics(sb *sandbox.Sandbox, mem *cgmgr.MemoryStats) [
 				return metrics
 			},
 		},
+		{
+			desc: containerSpecMemorySwapLimitBytes,
+			valueFunc: func() metricValues {
+				limit := mem.SwapLimit
+				if limit > maxMemorySize {
+					return metricValues{{value: 0, metricType: types.MetricType_GAUGE}}
+				}
+
+				return metricValues{{value: limit, metricType: types.MetricType_GAUGE}}
+			},
+		},
 	}
 
 	return computeSandboxMetrics(sb, memoryMetrics, "memory")
